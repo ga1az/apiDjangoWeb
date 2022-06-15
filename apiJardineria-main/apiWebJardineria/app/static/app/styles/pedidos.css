@@ -1,0 +1,43 @@
+@media only screen and (max-width: 768px) {
+    .navbar{
+        justify-content: space-between;
+    }
+    .form-control{
+        width: 10em;
+    }
+    .navbar-toggler{
+        width: 1.6em;
+        border: 0;
+        padding-left: 0;
+    }
+    .img_nav{
+        width: 1.6em;
+    }
+    .img-carrito{
+        width: 8.5em;
+        height: 12em;
+        margin-right: 1em;
+        margin-left: 1em;
+    }
+}
+@media only screen and (min-width: 1000px) {
+    .img-carrito{
+        width: 20em;
+        margin-right: 1em;
+        margin-left: 1em;
+    }
+    .info-carrito{
+        margin-left: 5em;
+        font-size: 20px;
+    }
+    .res-ped{
+        margin-top: 7em;
+        padding: 1em;
+        border: 1px solid gray;
+        height:30em;
+    }
+}
+
+.precio-carrito{
+    font-weight: bold;
+}
