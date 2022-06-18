@@ -202,9 +202,9 @@
                     <div class="card-body">
                         <h5 class="card-title">{{p.nombre | title}}</h5>
                         <p class="card-text">${{p.precio}}</p>
-                        <button class="btn-success">
+                        <a href="{% url 'addcart' p.id%}" class="btn-success">
                             <i class="bi bi-cart2"></i>
-                        </button>
+                        </a>
                     </div>
                 </div>
                 {% endif %} {% endfor %}
@@ -227,9 +227,9 @@
                     <div class="card-body">
                         <h5 class="card-title">{{p.nombre}}</h5>
                         <p class="card-text">${{p.precio}}</p>
-                        <button class="btn-success">
+                        <a href="{% url 'addcart' p.id%}" class="btn-success">
                             <i class="bi bi-cart2"></i>
-                        </button>
+                        </a>
                     </div>
                 </div>
                 {% endif %} {% endfor %}

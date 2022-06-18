@@ -1,51 +1,56 @@
-from typing_extensions import Self
-
-
-class Cart:
+class Carro:
     def __init__(self, request):
         self.request = request
         self.session = request.session
-        cart = self.session.get("cart")
-        if not cart:
-            cart = self.session["cart"] = {}
-        self.cart = cart
+        carro = self.session.get("carro")
+        if not carro:
+            carro = self.session["carro"] = {}
+        self.carro = carro
 
-    def add(self, product):
-        if str(product.id) not in self.cart.keys():
-            self.cart[product.id] = {
-                "id": product.id,
-                "nombre": product.name,
+    def agregar(self, producto):
+        if str(producto.id) not in self.carro.keys():
+            self.carro[producto.id] = {
+                "producto_id": producto.id,
+                "nombre": producto.nombre,
+                "precio": producto.precio,
                 "cantidad": 1,
-                "precio": product.price,
-                "img": product.image.url,
+                "imagen": producto.imagen.url,
             }
         else:
-            for key, value in self.cart.item():
-                if key == str(product.id):
+            for key, value in self.carro.items():
+                if key == str(producto.id):
                     value["cantidad"] = value["cantidad"] + 1
+                    value["precio"] = value["precio"] + producto.precio
                     break
-        self.save()
+        self.guardar_carro()
 
-    def save(self):
-        self.session["cart"] = self.cart
+    def guardar_carro(self):
+        self.session["carro"] = self.carro
         self.session.modified = True
 
-    def remove(self, product):
-        product_id = str(product.id)
-        if product_id in self.cart:
-            del self.cart[product_id]
-            self.save()
+    def eliminar(self, producto):
+        producto.id = str(producto.id)
+        if producto.id in self.carro:
+            del self.carro[producto.id]
+            self.guardar_carro()
 
-    def decrement(self, product):
-        for key, value in self.cart.items():
-            if key == str(product.id):
+    def restar(self, producto):
+        for key, value in self.carro.items():
+            if key == str(producto.id):
                 value["cantidad"] = value["cantidad"] - 1
-                if value["cantidad"] < 0:
-                    self.remove(product)
-                else:
-                    self.save()
+                value["precio"] = value["precio"] - producto.precio
+                if value["cantidad"] < 1:
+                    self.eliminar(producto)
                 break
+        self.guardar_carro()
 
-    def clear(self):
-        self.session["cart"] = {}
+    def sumar(self, producto):
+        id = str(producto.id)
+        if id in self.carro.keys():
+            self.carro[id]["cantidad"] += 1
+            self.carro[id]["acumulado"] += producto.precio
+        self.guardar_carrito()
+
+    def limpiar_carro(self):
+        self.session["carro"] = {}
         self.session.modified = True

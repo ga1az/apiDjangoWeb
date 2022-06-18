@@ -1,4 +1,4 @@
-from math import prod
+from .cart import Carro
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Producto
 from .forms import Registro, ProductoForm, DireccionForm, FormaPagoForm
@@ -21,10 +21,6 @@ def admin(request):
     productos = Producto.objects.all()
     data = {"Productos": productos}
     return render(request, "app/admin.html", data)
-
-
-def carrito(request):
-    return render(request, "app/carrito.html")
 
 
 def categoria(request):
@@ -91,6 +87,46 @@ def eliminar_producto(request, id):
     return redirect(to="admin2")
 
 
-# def agregarCarrito(request, id):
-#     carrito = Cart(request)
-#     return render(request, "app/carrito.html")
+def carrito(request):
+    return render(request, "app/carrito.html", {"carro": request.session["carro"]})
+
+
+def agregar_carrito(request, id):
+    carro = Carro(request)
+    producto = get_object_or_404(Producto, id=id)
+    carro.agregar(producto=producto)
+    return redirect(to="index")
+
+
+def eliminar_carrito(request, id):
+    carro = Carro(request)
+    producto = get_object_or_404(Producto, id=id)
+    carro.eliminar(producto=producto)
+    return redirect(to="carrito")
+
+
+def restar_carrito(request, id):
+    carro = Carro(request)
+    producto = get_object_or_404(Producto, id=id)
+    carro.restar(producto=producto)
+    return redirect(to="carrito")
+
+
+def clean_carrito(request):
+    carro = Carro(request)
+    carro.limpiar_carro()
+    return redirect(to="carrito")
+
+
+def procesar_compra(request):
+    messages.success(request, "Gracias por su Compra!!")
+    carro = Carro(request)
+    carro.limpiar_carro()
+    return redirect("index")
+
+
+def sumar_producto(request, producto_id):
+    carrito = Carro(request)
+    producto = Producto.objects.get(id=producto_id)
+    carrito.sumar(producto)
+    return redirect("carro")
