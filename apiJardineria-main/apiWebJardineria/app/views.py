@@ -1,8 +1,28 @@
 from .cart import Carro
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Producto
+from .models import Producto, Categoria
 from .forms import Registro, ProductoForm, DireccionForm, FormaPagoForm
 from django.contrib import messages
+from rest_framework import viewsets
+from .serializers import ProductoSerializer, CategorioSerializer
+
+class CategoriaViewSet(viewsets.ModelViewSet):
+    queryset = Categoria.objects.all()
+    serializer_class = CategorioSerializer
+
+class ProductoViewset(viewsets.ModelViewSet):
+    queryset = Producto.objects.all()
+    serializer_class = ProductoSerializer
+    
+    def get_queryset(self):
+        productos = Producto.objects.all()
+        nombre = self.request.GET.get('nombre')
+        
+        if nombre:
+            productos = productos.filter(nombre = nombre)
+        
+        return productos 
+
 
 # from app.cart import Cart
 
@@ -88,7 +108,10 @@ def eliminar_producto(request, id):
 
 
 def carrito(request):
-    return render(request, "app/carrito.html", {"carro": request.session["carro"]})
+    data = {
+        "carro": request.session["carro"]
+    }
+    return render(request, "app/carrito.html", data)
 
 
 def agregar_carrito(request, id):
@@ -130,3 +153,4 @@ def sumar_producto(request, producto_id):
     producto = Producto.objects.get(id=producto_id)
     carrito.sumar(producto)
     return redirect("carro")
+

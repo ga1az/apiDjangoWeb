@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .views import (
     agregar_carrito,
     clean_carrito,
@@ -20,7 +20,14 @@ from .views import (
     vender,
     modificarProducto,
     eliminar_producto,
+    ProductoViewset,
+    CategoriaViewSet
 )
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register("producto", ProductoViewset)
+router.register("categoria", CategoriaViewSet)
 
 urlpatterns = [
     path("", index, name="index"),
@@ -43,4 +50,5 @@ urlpatterns = [
     path("cleancart/", clean_carrito, name="cleancart"),
     path("procesar_compra/", procesar_compra, name="procesar_compra"),
     path("sumar/<id>/", sumar_producto, name="sumar"),
+    path("api/", include(router.urls)),
 ]
