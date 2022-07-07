@@ -6,6 +6,7 @@ class Carro:
         if not carro:
             carro = self.session["carro"] = {}
         self.carro = carro
+    
 
     def agregar(self, producto):
         if str(producto.id) not in self.carro.keys():
@@ -54,3 +55,4 @@ class Carro:
     def limpiar_carro(self):
         self.session["carro"] = {}
         self.session.modified = True
+    

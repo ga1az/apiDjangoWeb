@@ -1,7 +1,7 @@
 from asyncore import read
-from typing_extensions import Required
 from .models import Producto, Categoria
 from rest_framework import serializers
+from django.contrib.auth.models import User
 
 class CategorioSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,4 +16,9 @@ class ProductoSerializer(serializers.ModelSerializer):
     nombre = serializers.CharField(required=True, min_length=3, max_length=50)
     class Meta:
         model = Producto
+        fields = '__all__'
+
+class UsuarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
         fields = '__all__'

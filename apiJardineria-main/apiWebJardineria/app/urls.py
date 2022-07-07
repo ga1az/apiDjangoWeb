@@ -21,16 +21,22 @@ from .views import (
     modificarProducto,
     eliminar_producto,
     ProductoViewset,
-    CategoriaViewSet
+    CategoriaViewSet,
+    register,
+    totalPrice,
+    UsuarioViewSet
 )
 from rest_framework import routers
+from django.contrib.auth.views import LoginView, LogoutView
 
 router = routers.DefaultRouter()
 router.register("producto", ProductoViewset)
 router.register("categoria", CategoriaViewSet)
+router.register("usuario", UsuarioViewSet)
 
 urlpatterns = [
     path("", index, name="index"),
+    path("register/", register, name="register"),
     path("quienessomos/", quienessomos, name="quienessomos"),
     path("admin2/", admin, name="admin2"),
     path("categoria/", categoria, name="categoria"),
@@ -51,4 +57,8 @@ urlpatterns = [
     path("procesar_compra/", procesar_compra, name="procesar_compra"),
     path("sumar/<id>/", sumar_producto, name="sumar"),
     path("api/", include(router.urls)),
+    path("total/", totalPrice, name="total"),
+    
+    path("login/", LoginView.as_view(template_name="app/login.html"), name="login"),
+    path("logout/", LogoutView.as_view(template_name="app/logout.html"), name="logout"),
 ]

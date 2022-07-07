@@ -62,12 +62,20 @@
             >
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="/sesion">
+                        <a class="nav-link text-white" href="/login">
                             <i class="bi bi-person-circle"></i> Ingresar
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="/carrito">
+                        <a class="nav-link text-white" href="/register">
+                            Register
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a
+                            class="nav-link text-white"
+                            href="{% url 'carrito' %}"
+                        >
                             <i class="bi bi-cart"></i> Carrito
                         </a>
                     </li>
@@ -76,6 +84,14 @@
                             <i class="bi bi-truck"></i> Mis pedidos
                         </a>
                     </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link text-white" href="/logout">
+                            <i class="bi bi-person-circle"></i> Bienvenido
+                            {{user.get_username }}
+                        </a>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
         </nav>
@@ -91,7 +107,7 @@
                         <i class="bi bi-question-lg"></i> Ayuda
                     </li></a
                 >
-                <a href="{% url 'sesion'%}"
+                <a href="{% url 'perfil'%}"
                     ><li class="list-group-item border-0">
                         <i class="bi bi-gift"></i> Subscribirse
                     </li></a

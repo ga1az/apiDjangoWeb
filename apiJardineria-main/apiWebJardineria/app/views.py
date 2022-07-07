@@ -1,14 +1,23 @@
+from email import message
 from .cart import Carro
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Producto, Categoria
-from .forms import Registro, ProductoForm, DireccionForm, FormaPagoForm
+from .forms import Registro, ProductoForm, DireccionForm, FormaPagoForm, UserRegisterForm
 from django.contrib import messages
 from rest_framework import viewsets
-from .serializers import ProductoSerializer, CategorioSerializer
-
+from .serializers import ProductoSerializer, CategorioSerializer, UsuarioSerializer
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
     serializer_class = CategorioSerializer
+
+class UsuarioViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UsuarioSerializer
+
 
 class ProductoViewset(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
@@ -25,6 +34,22 @@ class ProductoViewset(viewsets.ModelViewSet):
 
 
 # from app.cart import Cart
+
+def register(request):
+        data = {
+            'form': UserRegisterForm()
+        }
+
+        if request.method == 'POST':
+            formulario = UserRegisterForm(data=request.POST)
+            if formulario.is_valid():
+                formulario.save()
+                user = authenticate(username=formulario.cleaned_data["username"], password=formulario.cleaned_data["password1"])
+                login(request, user)
+                messages.success(request, "Te has registrado correctamente")
+                return redirect(to="index")
+            data["form"] = formulario
+        return render(request, 'app/register.html', data)
 
 # Create your views here.
 def index(request):
@@ -50,14 +75,16 @@ def categoria(request):
 def compra(request):
     return render(request, "app/compra.html")
 
-
+@login_required(login_url='/login')
 def pedidos(request):
     return render(request, "app/pedidos.html")
 
 
+@login_required(login_url='/login')
 def perfil(request):
-    data = {"form": DireccionForm()}
-    return render(request, "app/perfil.html")
+    user = get_object_or_404(User, id=request.user.id)
+    data = {"user": user}
+    return render(request, "app/perfil.html", data)
 
 
 def producto(request):
@@ -98,6 +125,11 @@ def modificarProducto(request, id):
             messages.success(request, "Producto modificado correctamente")
             return redirect(to="admin2")
         data["form"] = formulario
+    return render(request, "app/modificar.html", data)
+
+def verProducto(request, id):
+    producto = get_object_or_404(Producto, id=id)
+    data = {"producto": producto}
     return render(request, "app/modificar.html", data)
 
 
@@ -153,4 +185,9 @@ def sumar_producto(request, producto_id):
     producto = Producto.objects.get(id=producto_id)
     carrito.sumar(producto)
     return redirect("carro")
+
+
+def totalPrice(request):
+    carrito = Carro(request)
+    return carrito.totalPrice()
 

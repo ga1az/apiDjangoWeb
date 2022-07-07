@@ -109,15 +109,6 @@
                 <a href="{% url 'cleancart'%}">Limpiar carrito</a>
                 <p class="text-dark text-monospace h5">RESUMEN DE TU PEDIDO</p>
                 <hr />
-                <div class="d-flex justify-content-around">
-                    <p class="">Subtotal</p>
-                    <div class="d-flex">
-                        <span class="text-danger font-weight-bold">$</span>
-                        <p class="text-danger font-weight-bold">
-                            {{request.session.carro.total}}
-                        </p>
-                    </div>
-                </div>
                 <hr />
                 <div class="d-flex d-flex justify-content-around">
                     <p>Envio</p>
@@ -137,7 +128,9 @@
                     <p>Total</p>
                     <div class="d-flex">
                         <span class="text-danger font-weight-bold">$</span>
-                        <p class="text-danger font-weight-bold">10000</p>
+                        <p class="text-danger font-weight-bold">
+                             {{total_carrito}}
+                        </p>
                     </div>
                 </div>
                 <div class="d-flex justify-content-center mt-5 mb-5">
